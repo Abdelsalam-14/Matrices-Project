@@ -22,7 +22,7 @@ class _ToggleScreenState extends State<ToggleScreen> {
             padding: const EdgeInsets.all(16),
             separatorBuilder: (BuildContext context, int index) =>
                 const SizedBox(height: 40),
-            itemCount: 3,
+            itemCount: images.length,
             itemBuilder: (BuildContext context, int index) => Column(
                   children: [
                     Container(
@@ -32,8 +32,9 @@ class _ToggleScreenState extends State<ToggleScreen> {
                           borderRadius: BorderRadius.circular(20),
                           image: DecorationImage(
                               image: AssetImage("images/${images[index]}"),
-                              fit: BoxFit.fill)),
+                              fit: BoxFit.fill))
                     ),
+
                     const SizedBox(height: 16),
                     AppButton(
                         title: buttonNames[index],
@@ -48,7 +49,7 @@ class _ToggleScreenState extends State<ToggleScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const second()));
-                          }else {
+                          } else {
                             // Navigator.push(
                             //     context,
                             //     MaterialPageRoute(
@@ -59,83 +60,3 @@ class _ToggleScreenState extends State<ToggleScreen> {
                 )));
   }
 }
-/*
-body: Container(
-          color: const Color.fromARGB(255, 255, 255, 255),
-          height: double.infinity,
-          width: double.infinity,
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(top: 100, right: 30, left: 30),
-                child: Image.asset(
-                  "images/base11.jpg",
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Container(
-                  child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const first()));
-                      },
-                      child: Center(
-                          child: Container(
-                        height: 44,
-                        width: 300,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: const Color.fromARGB(255, 8, 121, 213)),
-                        child: const Center(
-                          child: Text(
-                            " Gaussian Elimination ",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                fontSize: 18),
-                          ),
-                        ),
-                      )))),
-              const SizedBox(
-                height: 8,
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 100, right: 20, left: 20),
-                child: Image.asset(
-                  "images/base2.jpg",
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Container(
-                  child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const second()));
-                      },
-                      child: Center(
-                          child: Container(
-                        height: 44,
-                        width: 300,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: const Color.fromARGB(255, 8, 121, 213)),
-                        child: const Center(
-                          child: Text(
-                            "Gauss Jordan Elimination",
-                            style: TextStyle(
-                                color: Color.fromARGB(255, 255, 255, 255),
-                                fontSize: 18),
-                          ),
-                        ),
-                      ))))
-            ],
-          ),
-        )
- */

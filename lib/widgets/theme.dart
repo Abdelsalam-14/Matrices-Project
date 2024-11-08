@@ -172,12 +172,12 @@ class LightTheme {
       // ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(LightThemeColors.primary),
-          textStyle: MaterialStateProperty.all(
+          backgroundColor: WidgetStateProperty.all(LightThemeColors.primary),
+          textStyle: WidgetStateProperty.all(
             const TextStyle(
                 fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-          ),overlayColor: MaterialStateProperty.all(Colors.white.withOpacity(0.1)),
-          shape: MaterialStateProperty.all(
+          ),overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(0.1)),
+          shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
 
