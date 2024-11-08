@@ -13,17 +13,17 @@ class _secondState extends State<second> {
     return Scaffold(
         appBar: AppBar(
             toolbarHeight: 80,
-            title: (Text("Gauss Jordan Elimination")),
-            backgroundColor: Color.fromARGB(255, 8, 121, 213),
-            titleTextStyle: TextStyle(
+            title: (const Text("Gauss Jordan Elimination")),
+            backgroundColor: const Color.fromARGB(255, 8, 121, 213),
+            titleTextStyle: const TextStyle(
               color: Colors.white,
               fontSize: 22,
             )),
         body: Container(
-            color: Color.fromARGB(255, 255, 255, 255),
+            color: const Color.fromARGB(255, 255, 255, 255),
             height: double.infinity,
             width: double.infinity,
-            child: Column(
+            child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [],
             )));

@@ -14,34 +14,34 @@ class _baseState extends State<base> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            backgroundColor: Color.fromARGB(255, 8, 121, 213),
+            backgroundColor: const Color.fromARGB(255, 8, 121, 213),
             toolbarHeight: 70,
-            title: Text(
+            title: const Text(
               "Choose Method",
               style: TextStyle(
-                  color: const Color.fromARGB(255, 255, 255, 255),
+                  color: Color.fromARGB(255, 255, 255, 255),
                   fontSize: 25),
             )),
         body: Container(
-          color: Color.fromARGB(255, 255, 255, 255),
+          color: const Color.fromARGB(255, 255, 255, 255),
           height: double.infinity,
           width: double.infinity,
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.only(top: 100, right: 30, left: 30),
+                padding: const EdgeInsets.only(top: 100, right: 30, left: 30),
                 child: Image.asset(
                   "images/base11.jpg",
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Container(
                   child: InkWell(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => first()));
+                            MaterialPageRoute(builder: (context) => const first()));
                       },
                       child: Center(
                           child: Container(
@@ -49,7 +49,7 @@ class _baseState extends State<base> {
                         width: 300,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color: Color.fromARGB(255, 8, 121, 213)),
+                            color: const Color.fromARGB(255, 8, 121, 213)),
                         child: const Center(
                           child: Text(
                             " Gaussian Elimination ",
@@ -59,23 +59,23 @@ class _baseState extends State<base> {
                           ),
                         ),
                       )))),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Container(
-                padding: EdgeInsets.only(top: 100, right: 20, left: 20),
+                padding: const EdgeInsets.only(top: 100, right: 20, left: 20),
                 child: Image.asset(
                   "images/base2.jpg",
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Container(
                   child: InkWell(
                       onTap: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => second()));
+                            MaterialPageRoute(builder: (context) => const second()));
                       },
                       child: Center(
                           child: Container(
@@ -83,7 +83,7 @@ class _baseState extends State<base> {
                         width: 300,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color: Color.fromARGB(255, 8, 121, 213)),
+                            color: const Color.fromARGB(255, 8, 121, 213)),
                         child: const Center(
                           child: Text(
                             "Gauss Jordan Elimination",

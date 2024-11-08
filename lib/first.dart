@@ -13,17 +13,17 @@ class _firstState extends State<first> {
     return Scaffold(
         appBar: AppBar(
             toolbarHeight: 70,
-            title: (Text(" Gaussian Elimination ")),
-            backgroundColor: Color.fromARGB(255, 8, 121, 213),
-            titleTextStyle: TextStyle(
+            title: (const Text(" Gaussian Elimination ")),
+            backgroundColor: const Color.fromARGB(255, 8, 121, 213),
+            titleTextStyle: const TextStyle(
               color: Colors.white,
               fontSize: 22,
             )),
         body: Container(
-            color: Color.fromARGB(255, 255, 255, 255),
+            color: const Color.fromARGB(255, 255, 255, 255),
             height: double.infinity,
             width: double.infinity,
-            child: Column(
+            child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [],
             )));
