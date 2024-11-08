@@ -1,6 +1,6 @@
 import 'package:animated_widgets_flutter/widgets/opacity_animated.dart';
-import 'package:course_flutter/start.dart';
 import 'package:flutter/material.dart';
+import 'toggle_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -17,8 +17,10 @@ class SplashScreen extends StatelessWidget {
             duration: const Duration(milliseconds: 3000),
             enabled: true,
             animationFinished: (finished) async {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const start()));
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ToggleScreen()),
+                  (route) => false);
             },
             child: Container(
               clipBehavior: Clip.antiAliasWithSaveLayer,
