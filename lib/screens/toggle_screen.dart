@@ -1,8 +1,7 @@
-import 'package:course_flutter/screens/second.dart';
-import 'package:course_flutter/widgets/general_widgets.dart';
 import 'package:flutter/material.dart';
 
-import 'first.dart';
+import '../widgets/general_widgets.dart';
+import 'operations_screen.dart';
 
 class ToggleScreen extends StatefulWidget {
   const ToggleScreen({super.key});
@@ -26,37 +25,24 @@ class _ToggleScreenState extends State<ToggleScreen> {
             itemBuilder: (BuildContext context, int index) => Column(
                   children: [
                     Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 250,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                              image: AssetImage("images/${images[index]}"),
-                              fit: BoxFit.fill))
-                    ),
-
+                        width: MediaQuery.of(context).size.width,
+                        height: 250,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            image: DecorationImage(
+                                image: AssetImage("images/${images[index]}"),
+                                fit: BoxFit.fill))),
                     const SizedBox(height: 16),
                     AppButton(
                         title: buttonNames[index],
                         onPressed: () {
-                          if (index == 0) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const first()));
-                          } else if (index == 1) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const second()));
-                          } else {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => const third()));
-                          }
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => OperationsScreen(
+                                      appBarTitle: buttonNames[index])));
                         })
-                  ],
+                  ]
                 )));
   }
 }

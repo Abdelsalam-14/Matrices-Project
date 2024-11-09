@@ -16,9 +16,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class AppButton extends StatelessWidget {
-  final String title;
+  final String? title;
+  final IconData? icon;
+  final Widget? child;
   final void Function()? onPressed;
-  const AppButton({Key? key, required this.title, this.onPressed})
+  const AppButton({Key? key,   this.title, this.onPressed,   this.icon,   this.child})
       : super(key: key);
 
   @override
@@ -27,11 +29,22 @@ class AppButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
             minimumSize: Size(MediaQuery.of(context).size.width, 60)),
         onPressed: onPressed,
-        child: Text(
-          title,
+        child:child??(title==null?Icon(icon!,size: 28,color: Colors.white): Text(
+          title!,
           style: const TextStyle(
             color: Colors.white,
           ),
-        ));
+        )));
+  }
+}
+
+class AppTextFormField  extends StatelessWidget {
+  const AppTextFormField ({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return   TextFormField (
+
+    );
   }
 }
