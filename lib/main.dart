@@ -1,7 +1,7 @@
 import 'package:course_flutter/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../widgets/theme.dart';
+import 'widgets/theme.dart';
 
 void main() {
   runApp(const MyApp());

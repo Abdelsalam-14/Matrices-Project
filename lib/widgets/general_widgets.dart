@@ -59,7 +59,7 @@ keyboardType: TextInputType.number,
         hoverColor: Colors.black,
         focusColor: Colors.black,
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),borderSide: BorderSide(color: Colors.black )
+          borderRadius: BorderRadius.circular(20),borderSide: const BorderSide(color: Colors.black )
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20)
