@@ -16,9 +16,9 @@ class OperationsScreen extends StatefulWidget {
 
 class _OperationsScreenState extends State<OperationsScreen> {
   List<List<double>> inputMatrix = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
+    // [1, 2, 3],
+    // [4, 5, 6],
+    // [7, 8, 9]
   ];
   List<List<double>> outputMatrix = [];
 
@@ -95,6 +95,7 @@ class _OperationsScreenState extends State<OperationsScreen> {
                   title: "Delete List",
                   onPressed: () {
                     inputMatrix = [];
+                    outputMatrix = [];
                     setState(() {});
                   }),
             ],
