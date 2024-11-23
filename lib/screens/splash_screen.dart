@@ -1,6 +1,6 @@
 import 'package:animated_widgets_flutter/widgets/opacity_animated.dart';
-import 'package:course_flutter/widgets/general_widgets.dart';
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
+import '../core/general_widgets.dart';
 import 'toggle_screen.dart';
 
 class SplashScreen extends StatefulWidget {

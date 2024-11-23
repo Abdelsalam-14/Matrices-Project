@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/general_widgets.dart';
-import 'operations_screen.dart';
+import '../core/general_widgets.dart';
+ import 'operations_screen.dart';
 
 class ToggleScreen extends StatefulWidget {
   const ToggleScreen({super.key});
