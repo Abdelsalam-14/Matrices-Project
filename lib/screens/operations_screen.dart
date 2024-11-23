@@ -21,9 +21,9 @@ class _OperationsScreenState extends State<OperationsScreen> {
     // [1, 2, 3],
     // [4, 5, 6],
     // [7, 8, 9]
-    [2, -1, -2, -3],
-    [-3, -1, 2, 5],
-    [-2, 1, 2, 6]
+    // [2, -1, -2, -3],
+    // [-3, -1, 2, 5],
+    // [-2, 1, 2, 6]
   ];
   List<String> steps = [];
   List<List<double>> outputMatrix = [];
