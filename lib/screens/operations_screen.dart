@@ -21,9 +21,9 @@ class _OperationsScreenState extends State<OperationsScreen> {
     // [1, 2, 3],
     // [4, 5, 6],
     // [7, 8, 9]
-    // [2, -1, -2, -3],
-    // [-3, -1, 2, 5],
-    // [-2, 1, 2, 6]
+   /* [2, 1, -1, 8],
+    [-3, -1, 2, -11],
+    [-2, 1, 2, -3]*/
   ];
   List<String> steps = [];
   List<List<double>> outputMatrix = [];
@@ -67,7 +67,8 @@ class _OperationsScreenState extends State<OperationsScreen> {
                 title: "Add Row",
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    String numbers = controller.text;
+                    List<String> numbers = controller.text.split(" ");
+                    print(numbers);
                     List<double> list = [];
                     for (int i = 0; i < numbers.length; i++) {
                       list.add(double.parse(numbers[i]));
@@ -112,18 +113,22 @@ class _OperationsScreenState extends State<OperationsScreen> {
                   // List<List<double>> matrix = inputMatrix;
                   outputMatrix =
                       inputMatrix.map((row) => List<double>.from(row)).toList();
+                  List<List<double>> detailsMatrix =
+                      inputMatrix.map((row) => List<double>.from(row)).toList();
+
                   // print("first");
                   // print(inputMatrix);
                   // outputMatrix =
                   if (widget.appBarTitle == "Gaussian") {
                     GaussianEliminationSolve.gaussianElimination(outputMatrix);
-                    performGaussianElimination(outputMatrix);
+                    performGaussianElimination(detailsMatrix);
                   } else if (widget.appBarTitle == "Gauss Jordan") {
                     GaussianJordanSolve.gaussianJordan(outputMatrix);
-                    performGaussianJordanElimination(outputMatrix);
+                    performGaussianJordanElimination(detailsMatrix);
                   } else if (widget.appBarTitle == "Inverse") {
-                    GaussianJordanInverseSolve.findInverse(outputMatrix,context);
-                    performGaussianJordanForInverse(outputMatrix);
+                    GaussianJordanInverseSolve.findInverse(
+                        outputMatrix, context);
+                    performGaussianJordanForInverse(detailsMatrix);
                   }
 
                   // print("second");
@@ -190,6 +195,58 @@ class _OperationsScreenState extends State<OperationsScreen> {
       ),
     );
   }
+
+  // void performGaussianJordanElimination(List<List<double>> matrix) {
+  //   int n = matrix.length;
+  //   int m = matrix[0].length;
+  //   void addStep(String text) {
+  //     setState(() {
+  //       steps.add(text);
+  //     });
+  //   }
+  //
+  //   void addMatrix(List<List<double>> matrix) {
+  //     String formattedMatrix = matrix
+  //         .map(
+  //             (row) => row.map((e) => e.toStringAsFixed(2)).toList().toString())
+  //         .join("\n");
+  //     addStep(formattedMatrix);
+  //   }
+  //
+  //   addStep("Initial Matrix:");
+  //   addMatrix(matrix);
+  //
+  //   for (int i = 0; i < n; i++) {
+  //     double pivot = matrix[i][i];
+  //     if (pivot == 0) {
+  //       addStep(
+  //           "Cannot divide by zero pivot at row ${i + 1}. Check the matrix.");
+  //       return;
+  //     }
+  //
+  //     addStep("Normalize row ${i + 1} by dividing by pivot $pivot:");
+  //     for (int j = 0; j < m; j++) {
+  //       matrix[i][j] /= pivot;
+  //     }
+  //     addMatrix(matrix); // After normalization, update the matrix view
+  //
+  //     // Eliminate all other entries in the current column
+  //     for (int k = 0; k < n; k++) {
+  //       if (k != i) {
+  //         double factor = matrix[k][i];
+  //         addStep(
+  //             "Eliminate column ${i + 1} in row ${k + 1} using row ${i + 1}:");
+  //         for (int j = 0; j < m; j++) {
+  //           matrix[k][j] -= factor * matrix[i][j];
+  //         }
+  //         addMatrix(matrix); // After elimination, update the matrix view
+  //       }
+  //     }
+  //   }
+  //
+  //   addStep("Final Reduced Row Echelon Form (RREF):");
+  //   addMatrix(matrix);
+  // }
 
   /// Inverse
   void performGaussianJordanForInverse(List<List<double>> matrix) {
@@ -270,39 +327,39 @@ class _OperationsScreenState extends State<OperationsScreen> {
     int n = matrix.length;
     int m = matrix[0].length;
 
-    addStep("Initial Matrix:");
-    addMatrix(matrix);
+    addStepGaussian("Initial Matrix:");
+    addMatrixGaussian(matrix);
 
     for (int i = 0; i < n; i++) {
       // Normalize the pivot row
       double pivot = matrix[i][i];
       if (pivot == 0) {
-        addStep(
+        addStepGaussian(
             "\nCannot divide by zero pivot at row ${i + 1}. Check the matrix.");
         return;
       }
-      addStep("\nNormalize row ${i + 1} by dividing by pivot $pivot:");
+      addStepGaussian("\nNormalize row ${i + 1} by dividing by pivot $pivot:");
       for (int j = 0; j < m; j++) {
         matrix[i][j] /= pivot;
       }
-      addMatrix(matrix);
+      addMatrixGaussian(matrix);
 
       // Eliminate all other entries in the current column
       for (int k = 0; k < n; k++) {
         if (k != i) {
           double factor = matrix[k][i];
-          addStep(
+          addStepGaussian(
               "\nEliminate column ${i + 1} in row ${k + 1} using row ${i + 1}:");
           for (int j = 0; j < m; j++) {
             matrix[k][j] -= factor * matrix[i][j];
           }
-          addMatrix(matrix);
+          addMatrixGaussian(matrix);
         }
       }
     }
 
-    addStep("\nFinal Reduced Row Echelon Form (RREF):");
-    addMatrix(matrix);
+    addStepGaussian("\nFinal Reduced Row Echelon Form (RREF):");
+    addMatrixGaussian(matrix);
   }
 
   /// GaussianElimination
@@ -326,17 +383,17 @@ class _OperationsScreenState extends State<OperationsScreen> {
 
       // Swap the maximum row with the current row
       addStep(
-          "\nPivot for column ${i + 1}: Swap row ${i + 1} with row ${maxRow + 1}");
+          "Pivot for column ${i + 1}: Swap row ${i + 1} with row ${maxRow + 1}");
       List<double> temp = matrix[maxRow];
       matrix[maxRow] = matrix[i];
       matrix[i] = temp;
-      addMatrix(matrix);
+      addMatrix(matrix); // After row swap, update the matrix view
 
       // Make all rows below this one 0 in the current column
       for (int k = i + 1; k < n; k++) {
         double c = -matrix[k][i] / matrix[i][i];
         addStep(
-            "\nEliminating column ${i + 1} in row ${k + 1} using row ${i + 1}:");
+            "Eliminating column ${i + 1} in row ${k + 1} using row ${i + 1}:");
         for (int j = i; j < m; j++) {
           if (i == j) {
             matrix[k][j] = 0;
@@ -344,24 +401,70 @@ class _OperationsScreenState extends State<OperationsScreen> {
             matrix[k][j] += c * matrix[i][j];
           }
         }
-        addMatrix(matrix);
+        addMatrix(matrix); // After elimination, update the matrix view
       }
     }
 
-    addStep("\nFinal Upper Triangular Matrix:");
+    addStep("Final Upper Triangular Matrix:");
     addMatrix(matrix);
   }
 
-  // void addStep(String text) {
-  //   setState(() {
-  //     steps.add(text);
-  //   });
-  // }
-  //
-  // void addMatrix(List<List<double>> matrix) {
-  //   String formattedMatrix = matrix
-  //       .map((row) => row.map((e) => e.toStringAsFixed(2)).toList().toString())
-  //       .join("\n");
-  //   addStep(formattedMatrix);
-  // }
+//   void performGaussianElimination(List<List<double>> matrix) {
+//     int n = matrix.length;
+//     int m = matrix[0].length;
+//
+//     addStepGaussian("Initial Matrix:");
+//     addMatrixGaussian(matrix);
+//
+//     for (int i = 0; i < n; i++) {
+//       // Find the maximum element in the current column
+//       double maxEl = matrix[i][i];
+//       int maxRow = i;
+//       for (int k = i + 1; k < n; k++) {
+//         if (matrix[k][i].abs() > maxEl.abs()) {
+//           maxEl = matrix[k][i];
+//           maxRow = k;
+//         }
+//       }
+//
+//       // Swap the maximum row with the current row
+//       addStepGaussian(
+//           "\nPivot for column ${i + 1}: Swap row ${i + 1} with row ${maxRow + 1}");
+//       List<double> temp = matrix[maxRow];
+//       matrix[maxRow] = matrix[i];
+//       matrix[i] = temp;
+//       addMatrixGaussian(matrix);
+//
+//       // Make all rows below this one 0 in the current column
+//       for (int k = i + 1; k < n; k++) {
+//         double c = -matrix[k][i] / matrix[i][i];
+//         addStepGaussian(
+//             "\nEliminating column ${i + 1} in row ${k + 1} using row ${i + 1}:");
+//         for (int j = i; j < m; j++) {
+//           if (i == j) {
+//             matrix[k][j] = 0;
+//           } else {
+//             matrix[k][j] += c * matrix[i][j];
+//           }
+//         }
+//         addMatrixGaussian(matrix);
+//       }
+//     }
+//
+//     addStepGaussian("\nFinal Upper Triangular Matrix:");
+//     addMatrixGaussian(matrix);
+//   }
+//
+  void addStepGaussian(String text) {
+    setState(() {
+      steps.add(text);
+    });
+  }
+
+  void addMatrixGaussian(List<List<double>> matrix) {
+    String formattedMatrix = matrix
+        .map((row) => row.map((e) => e.toStringAsFixed(2)).toList().toString())
+        .join("\n");
+    addStepGaussian(formattedMatrix);
+  }
 }
