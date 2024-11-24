@@ -1,63 +1,147 @@
-import '../core/toast.dart';
-
+// class GaussianJordanInverseSolve {
+//   static List<List<double>> inverseMatrix(List<List<double>> matrix) {
+//     int n = matrix.length;
+//     if (n == 0) return [];
+//
+//     int m = matrix[0].length;
+//
+//     // Create an identity matrix of the same size as the input matrix
+//     List<List<double>> inverse = List.generate(n, (i) => List.filled(n, 0.0));
+//     for (int i = 0; i < n; i++) {
+//       inverse[i][i] = 1.0;  // Initializing the identity matrix
+//     }
+//
+//     print("Initial Matrix:");
+//     printMatrix(matrix);
+//     print("\nInitial Identity Matrix:");
+//     printMatrix(inverse);
+//
+//     // Step 1: Forward Elimination using Gaussian Jordan Method
+//     for (int i = 0; i < n; i++) {
+//       // Find the maximum element in the current column (pivot element)
+//       double pivot = matrix[i][i];
+//       if (pivot == 0) {
+//         throw Exception("Pivot element at row $i is zero. The matrix is singular and cannot be inverted.");
+//       }
+//
+//       // Normalize the pivot row
+//       for (int j = 0; j < n; j++) {
+//         matrix[i][j] /= pivot;
+//         inverse[i][j] /= pivot;
+//       }
+//
+//       // Make all other elements in the column zero
+//       for (int k = 0; k < n; k++) {
+//         if (k != i) {
+//           double factor = matrix[k][i];
+//           for (int j = 0; j < n; j++) {
+//             matrix[k][j] -= factor * matrix[i][j];
+//             inverse[k][j] -= factor * inverse[i][j];
+//           }
+//         }
+//       }
+//
+//       print("\nAfter normalizing row $i and eliminating column $i:");
+//       printMatrix(matrix);
+//       printMatrix(inverse);
+//     }
+//
+//     print("\nFinal Inverse Matrix:");
+//     printMatrix(inverse);
+//     return inverse;
+//   }
+//
+//   // Utility function to print a matrix
+//   static void printMatrix(List<List<double>> matrix) {
+//     for (var row in matrix) {
+//       print(row.map((e) => e.toStringAsFixed(2)).toList());
+//     }
+//   }
+// }
 class GaussianJordanInverseSolve {
-  static List<List<double>> findInverse(List<List<double>> matrix, context) {
+  static List<List<double>> inverseMatrix(List<List<double>> matrix) {
     int n = matrix.length;
-    if (n == 0 || matrix.any((row) => row.length != n)) {
-      // throw ArgumentError("Matrix must be square and non-empty.");
-      Toast.show("Matrix must be square and non-empty", context,messageType: MessageType.error);
+    if (n == 0) return [];
+
+    int m = matrix[0].length;
+
+    // Create an identity matrix of the same size as the input matrix
+    List<List<double>> inverse = List.generate(n, (i) => List.filled(n, 0.0));
+    for (int i = 0; i < n; i++) {
+      inverse[i][i] = 1.0;  // Initializing the identity matrix
     }
 
-    // Create an augmented matrix with the identity matrix
-    List<List<double>> augmented = [];
-    for (int i = 0; i < n; i++) {
-      augmented
-          .add([...matrix[i], ...List.generate(n, (j) => i == j ? 1.0 : 0.0)]);
-    }
+    print("Initial Matrix:");
+    printMatrix(matrix);
+    print("\nInitial Identity Matrix:");
+    printMatrix(inverse);
 
-    print("Initial Augmented Matrix:");
-    printMatrix(augmented);
-
-    // Perform Gaussian-Jordan elimination
+    // Step 1: Forward Elimination using Gaussian Jordan Method
     for (int i = 0; i < n; i++) {
-      // Normalize the pivot row
-      double pivot = augmented[i][i];
+      // Find the maximum element in the current column (pivot element)
+      double pivot = matrix[i][i];
+      int pivotRow = i;
+
       if (pivot == 0) {
-        Toast.show("Matrix is singular and cannot be inverted", context,messageType: MessageType.error);
-        // print("\nMatrix is singular and cannot be inverted.");
-        // throw ArgumentError("Matrix is singular and cannot be inverted.");
+        // Find a row to swap with
+        for (int k = i + 1; k < n; k++) {
+          if (matrix[k][i] != 0) {
+            pivotRow = k;
+            break;
+          }
+        }
+
+        if (matrix[pivotRow][i] == 0) {
+          throw Exception("Matrix is singular and cannot be inverted. Pivot is zero at row $i.");
+        }
+
+        // Swap rows i and pivotRow in both matrix and inverse
+        List<double> temp = matrix[pivotRow];
+        matrix[pivotRow] = matrix[i];
+        matrix[i] = temp;
+
+        temp = inverse[pivotRow];
+        inverse[pivotRow] = inverse[i];
+        inverse[i] = temp;
+
+        print("\nSwapped row $i with row $pivotRow:");
+        printMatrix(matrix);
+        printMatrix(inverse);
       }
 
-      print("\nNormalize row $i by dividing by pivot $pivot:");
-      for (int j = 0; j < augmented[i].length; j++) {
-        augmented[i][j] /= pivot;
+      // Normalize the pivot row
+      pivot = matrix[i][i];
+      for (int j = 0; j < n; j++) {
+        matrix[i][j] /= pivot;
+        inverse[i][j] /= pivot;
       }
-      printMatrix(augmented);
 
-      // Eliminate all other entries in the current column
+      print("\nAfter normalizing row $i:");
+      printMatrix(matrix);
+      printMatrix(inverse);
+
+      // Make all other elements in the column zero
       for (int k = 0; k < n; k++) {
         if (k != i) {
-          double factor = augmented[k][i];
-          print("\nEliminate column $i in row $k using row $i:");
-          for (int j = 0; j < augmented[k].length; j++) {
-            augmented[k][j] -= factor * augmented[i][j];
+          double factor = matrix[k][i];
+          for (int j = 0; j < n; j++) {
+            matrix[k][j] -= factor * matrix[i][j];
+            inverse[k][j] -= factor * inverse[i][j];
           }
-          printMatrix(augmented);
         }
       }
+
+      print("\nAfter eliminating column $i:");
+      printMatrix(matrix);
+      printMatrix(inverse);
     }
 
-    // Extract the inverse matrix
-    List<List<double>> inverse = [];
-    for (int i = 0; i < n; i++) {
-      inverse.add(augmented[i].sublist(n));
-    }
-
-    print("\nInverse Matrix:");
+    print("\nFinal Inverse Matrix:");
     printMatrix(inverse);
     return inverse;
   }
 
+  // Utility function to print a matrix
   static void printMatrix(List<List<double>> matrix) {
     for (var row in matrix) {
       print(row.map((e) => e.toStringAsFixed(2)).toList());
