@@ -1,14 +1,16 @@
 class GaussianJordanSolve {
-  static List<double> gaussianJordan(List<List<double>> matrix) {
+  static List<double>? gaussianJordan(List<List<double>> matrix) {
     int n = matrix.length;
     if (n == 0) return [];
 
     int m = matrix[0].length;
+    if (m != n + 1) {
+      throw Exception("Invalid matrix dimensions: The matrix should have n rows and n+1 columns.");
+    }
 
     print("Initial Matrix:");
     printMatrix(matrix);
 
-    // Forward elimination to get the upper triangular matrix
     for (int i = 0; i < n; i++) {
       // Find the maximum element in the current column
       double maxEl = matrix[i][i];
@@ -31,7 +33,8 @@ class GaussianJordanSolve {
 
       // Check for singular matrix
       if (matrix[i][i] == 0) {
-        throw Exception("Matrix is singular or nearly singular at pivot $i");
+        print("\nMatrix is singular or nearly singular at pivot $i.");
+        return null; // No unique solution
       }
 
       // Normalize the pivot row
@@ -59,6 +62,21 @@ class GaussianJordanSolve {
 
     print("\nFinal Reduced Row Echelon Form (RREF):");
     printMatrix(matrix);
+
+    // Check for inconsistent system (e.g., 0 = c where c != 0)
+    for (int i = 0; i < n; i++) {
+      bool allZeros = true;
+      for (int j = 0; j < m - 1; j++) {
+        if (matrix[i][j] != 0) {
+          allZeros = false;
+          break;
+        }
+      }
+      if (allZeros && matrix[i][m - 1] != 0) {
+        print("\nNo solution: inconsistent system.");
+        return null; // No solution
+      }
+    }
 
     // Extract the solution from the last column
     List<double> solution = List.filled(n, 0.0);

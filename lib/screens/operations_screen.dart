@@ -18,35 +18,14 @@ class OperationsScreen extends StatefulWidget {
 
 class _OperationsScreenState extends State<OperationsScreen> {
   List<List<double>> inputMatrix = [
-    [-3,5,2],
-    [4,-7,3],
-    [1,2,-1]
-    // [2,7,4]
-    // ,[1,5,3],
-    // [3,4,2]
-    // [4,7,2],
-    // [3,5,1],
-    // [2,4,3]
-    // [2,7,4],
-    // []
-    // [2,3],
-    // [1,4]
-    // [3,2],
-    // [4,1]
-    // [1, 2, 3],
-    // [4, 5, 6],
-    // [7, 8, 9]
-  //   [2.00, 1.00, -1.00],
-  //   [-3.00, -1.00, 2.00],
-  // [-2.00, 1.00, 2.00]
-    // [2.00, 1.00, -1.00, 8.00],
-    // [-3.00, -1.00, 2.00, -11.00],
-    // [-2.00, 1.00, 2.00, -3.00]
+[1,2,1,6],
+    [2,3,3,14],
+    [0,1,2,8]
   ];
 
   List<String> steps = [];
-  List<List<double>> outputMatrix = [];
-  List<double> solution = [];
+  List<List<double>> ?outputMatrix = [];
+  List<double>? solution = [];
   TextEditingController controller = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
@@ -140,16 +119,16 @@ class _OperationsScreenState extends State<OperationsScreen> {
                   // outputMatrix =
                   if (widget.appBarTitle == "Gaussian") {
                     solution = GaussianEliminationSolve.gaussianElimination(
-                        outputMatrix);
+                        outputMatrix!);
                     // GaussianEliminationSolve.gaussianElimination(outputMatrix);
                     // GaussianEliminationSolve.gaussianElimination(outputMatrix);
                     performGaussianElimination(detailsMatrix);
                   } else if (widget.appBarTitle == "Gauss Jordan") {
-                    solution = GaussianJordanSolve.gaussianJordan(outputMatrix);
+                    solution = GaussianJordanSolve.gaussianJordan(outputMatrix!);
                     performGaussianJordanElimination(detailsMatrix);
                   } else if (widget.appBarTitle == "Inverse") {
 
-                    outputMatrix=       GaussianJordanInverseSolve.inverseMatrix(outputMatrix);
+                    outputMatrix=  GaussianJordanInverseSolve.inverseMatrix(outputMatrix!);
                     performGaussianJordanForInverse(detailsMatrix);
                   }
 
@@ -158,7 +137,7 @@ class _OperationsScreenState extends State<OperationsScreen> {
                   setState(() {});
                 }),
             const SizedBox(height: 24),
-            if (solution.isNotEmpty||(outputMatrix.isNotEmpty&&widget.appBarTitle == "Inverse"))
+            if (solution?.isNotEmpty==true||(outputMatrix?.isNotEmpty==true&&widget.appBarTitle == "Inverse"))
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(12),
@@ -173,7 +152,7 @@ class _OperationsScreenState extends State<OperationsScreen> {
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w800)),
                     const SizedBox(height: 8),
-                    Text(outputMatrix.isNotEmpty&&widget.appBarTitle == "Inverse"? GeneralFunctions.matrixToString(outputMatrix):solution.toString(),
+                    Text(outputMatrix?.isNotEmpty==true&&widget.appBarTitle == "Inverse"? GeneralFunctions.matrixToString(outputMatrix!):solution.toString(),
 
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w600)),
@@ -181,7 +160,7 @@ class _OperationsScreenState extends State<OperationsScreen> {
                 ),
               ),
             const SizedBox(height: 24),
-            if (outputMatrix.isNotEmpty)
+            if (outputMatrix?.isNotEmpty==true)
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(12),

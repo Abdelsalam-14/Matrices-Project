@@ -1,16 +1,19 @@
 class GaussianEliminationSolve {
-  static List<double> gaussianElimination(List<List<double>> matrix) {
+  static List<double>? gaussianElimination(List<List<double>> matrix) {
     int n = matrix.length;
     if (n == 0) return [];
 
     int m = matrix[0].length;
+    if (m != n + 1) {
+      throw Exception("Invalid matrix dimensions: The matrix should have n rows and n+1 columns.");
+    }
 
     print("Initial Matrix:");
     printMatrix(matrix);
 
     // Forward elimination
     for (int i = 0; i < n; i++) {
-      // Find the maximum element in the current column
+      // Find the maximum element in the current column for pivoting
       double maxEl = matrix[i][i];
       int maxRow = i;
       for (int k = i + 1; k < n; k++) {
@@ -20,7 +23,7 @@ class GaussianEliminationSolve {
         }
       }
 
-      // Swap the maximum row with the current row
+      // Swap the maximum row with the current row if needed
       if (maxRow != i) {
         print("\nPivot for column $i: Swap row $i with row $maxRow");
         List<double> temp = matrix[maxRow];
@@ -31,7 +34,8 @@ class GaussianEliminationSolve {
 
       // Check for singular matrix
       if (matrix[i][i] == 0) {
-        throw Exception("Matrix is singular or nearly singular at pivot $i");
+        print("\nMatrix is singular or nearly singular at pivot $i.");
+        return null; // No unique solution
       }
 
       // Make all rows below this one 0 in the current column
