@@ -107,14 +107,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-  linalg:
-    dependency: "direct main"
-    description:
-      name: linalg
-      sha256: "5a2814f37d9904c37c9fb24417860d03eed7e348eb34e0dc9f0a2007512642ef"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
   lints:
     dependency: transitive
     description:

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:linalg/matrix.dart';
 
 import '../Functions/gaussian_function.dart';
 import '../Functions/gaussian_jordan_function.dart';
@@ -137,10 +136,7 @@ class _OperationsScreenState extends State<OperationsScreen> {
                         outputMatrix!, context);
                     performGaussianJordanElimination(detailsMatrix);
                   } else if (widget.appBarTitle == "Inverse") {
-                    final Matrix inverse = Matrix(outputMatrix!);
-                    // [[-0.0, 0.0, 1.0], [-2.0, 1.0, 3.0], [3.0, -1.0, -5.0]]
-                    // print("inverse");
-                    // print(inverse.inverse()  );
+
                     outputMatrix = GaussianJordanInverseSolve.inverseMatrix(
                         outputMatrix!, context);
                     performGaussianJordanForInverse(detailsMatrix);
