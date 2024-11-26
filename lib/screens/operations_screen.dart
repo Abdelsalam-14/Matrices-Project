@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linalg/matrix.dart';
 
 import '../Functions/gaussian_function.dart';
 import '../Functions/gaussian_jordan_function.dart';
@@ -18,13 +19,21 @@ class OperationsScreen extends StatefulWidget {
 
 class _OperationsScreenState extends State<OperationsScreen> {
   List<List<double>> inputMatrix = [
-[1,2,1,6],
-    [2,3,3,14],
-    [0,1,2,8]
+    //gasusss and gassuaian
+    // [1,2,1,6],
+    // [2,3,3,14],
+    // [0,1,2,8]
+    // inverse
+    //   [2, 1, 1],
+    //   [1, 3, 2],
+    //   [1, 0, 0]
+    // inverso not found
+    //   [1, 2],
+    //   [2, 4]
   ];
 
   List<String> steps = [];
-  List<List<double>> ?outputMatrix = [];
+  List<List<double>>? outputMatrix = [];
   List<double>? solution = [];
   TextEditingController controller = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -119,16 +128,21 @@ class _OperationsScreenState extends State<OperationsScreen> {
                   // outputMatrix =
                   if (widget.appBarTitle == "Gaussian") {
                     solution = GaussianEliminationSolve.gaussianElimination(
-                        outputMatrix!);
+                        outputMatrix!, context);
                     // GaussianEliminationSolve.gaussianElimination(outputMatrix);
                     // GaussianEliminationSolve.gaussianElimination(outputMatrix);
                     performGaussianElimination(detailsMatrix);
                   } else if (widget.appBarTitle == "Gauss Jordan") {
-                    solution = GaussianJordanSolve.gaussianJordan(outputMatrix!);
+                    solution = GaussianJordanSolve.gaussianJordan(
+                        outputMatrix!, context);
                     performGaussianJordanElimination(detailsMatrix);
                   } else if (widget.appBarTitle == "Inverse") {
-
-                    outputMatrix=  GaussianJordanInverseSolve.inverseMatrix(outputMatrix!);
+                    final Matrix inverse = Matrix(outputMatrix!);
+                    // [[-0.0, 0.0, 1.0], [-2.0, 1.0, 3.0], [3.0, -1.0, -5.0]]
+                    // print("inverse");
+                    // print(inverse.inverse()  );
+                    outputMatrix = GaussianJordanInverseSolve.inverseMatrix(
+                        outputMatrix!, context);
                     performGaussianJordanForInverse(detailsMatrix);
                   }
 
@@ -137,7 +151,9 @@ class _OperationsScreenState extends State<OperationsScreen> {
                   setState(() {});
                 }),
             const SizedBox(height: 24),
-            if (solution?.isNotEmpty==true||(outputMatrix?.isNotEmpty==true&&widget.appBarTitle == "Inverse"))
+            if (solution?.isNotEmpty == true ||
+                (outputMatrix?.isNotEmpty == true &&
+                    widget.appBarTitle == "Inverse"))
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(12),
@@ -152,15 +168,18 @@ class _OperationsScreenState extends State<OperationsScreen> {
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w800)),
                     const SizedBox(height: 8),
-                    Text(outputMatrix?.isNotEmpty==true&&widget.appBarTitle == "Inverse"? GeneralFunctions.matrixToString(outputMatrix!):solution.toString(),
-
+                    Text(
+                        outputMatrix?.isNotEmpty == true &&
+                                widget.appBarTitle == "Inverse"
+                            ? GeneralFunctions.matrixToString(outputMatrix!)
+                            : solution.toString(),
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w600)),
                   ],
                 ),
               ),
             const SizedBox(height: 24),
-            if (outputMatrix?.isNotEmpty==true)
+            if (outputMatrix?.isNotEmpty == true)
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(12),
@@ -199,6 +218,7 @@ class _OperationsScreenState extends State<OperationsScreen> {
   }
 
   /// Inverse
+
   void performGaussianJordanForInverse(List<List<double>> matrix) {
     int n = matrix.length;
     int m = matrix[0].length;
@@ -212,8 +232,10 @@ class _OperationsScreenState extends State<OperationsScreen> {
     // Create an augmented matrix with the identity matrix on the right
     List<List<double>> augmented = [];
     for (int i = 0; i < n; i++) {
-      augmented
-          .add([...matrix[i], ...List.generate(n, (j) => i == j ? 1.0 : 0.0)]);
+      augmented.add([
+        ...matrix[i].map((e) => e.toDouble()), // Ensure all values are double
+        ...List.generate(n, (j) => i == j ? 1.0 : 0.0)
+      ]);
     }
 
     addStep("Initial Augmented Matrix:");
@@ -258,6 +280,78 @@ class _OperationsScreenState extends State<OperationsScreen> {
     addStep("\nInverse Matrix:");
     addMatrix(inverse);
   }
+
+// // Function to add steps for debugging
+//   void addStep(String message) {
+//     print(message);
+//   }
+//
+// // Function to print a matrix without rounding
+//   void addMatrix(List<List<double>> matrix) {
+//     for (var row in matrix) {
+//       print(row.map((e) => e.toString()).toList()); // Print values as-is
+//     }
+//   }
+
+  // void performGaussianJordanForInverse(List<List<double>> matrix) {
+  //   int n = matrix.length;
+  //   int m = matrix[0].length;
+  //
+  //   // Check if the matrix is square
+  //   if (n != m) {
+  //     addStep("\nMatrix is not square, cannot find inverse.");
+  //     return;
+  //   }
+  //
+  //   // Create an augmented matrix with the identity matrix on the right
+  //   List<List<double>> augmented = [];
+  //   for (int i = 0; i < n; i++) {
+  //     augmented
+  //         .add([...matrix[i], ...List.generate(n, (j) => i == j ? 1.0 : 0.0)]);
+  //   }
+  //
+  //   addStep("Initial Augmented Matrix:");
+  //   addMatrix(augmented);
+  //
+  //   // Perform Gaussian-Jordan elimination
+  //   for (int i = 0; i < n; i++) {
+  //     // Normalize the pivot row
+  //     double pivot = augmented[i][i];
+  //     if (pivot == 0) {
+  //       addStep(
+  //           "\nCannot divide by zero pivot at row ${i + 1}. Matrix is singular.");
+  //       return;
+  //     }
+  //     addStep("\nNormalize row ${i + 1} by dividing by pivot $pivot:");
+  //     for (int j = 0; j < augmented[i].length; j++) {
+  //       augmented[i][j] /= pivot;
+  //     }
+  //     addMatrix(augmented);
+  //
+  //     // Eliminate all other entries in the current column
+  //     for (int k = 0; k < n; k++) {
+  //       if (k != i) {
+  //         double factor = augmented[k][i];
+  //         addStep(
+  //             "\nEliminate column ${i + 1} in row ${k + 1} using row ${i + 1}:");
+  //         for (int j = 0; j < augmented[k].length; j++) {
+  //           augmented[k][j] -= factor * augmented[i][j];
+  //         }
+  //         addMatrix(augmented);
+  //       }
+  //     }
+  //   }
+  //
+  //   // Extract the inverse matrix (the right side of the augmented matrix)
+  //   List<List<double>> inverse = [];
+  //   for (int i = 0; i < n; i++) {
+  //     inverse.add(augmented[i]
+  //         .sublist(n)); // Extract the right part of the augmented matrix
+  //   }
+  //
+  //   addStep("\nInverse Matrix:");
+  //   addMatrix(inverse);
+  // }
 
   /// GaussianJordanElimination
   void performGaussianJordanElimination(List<List<double>> matrix) {
@@ -324,9 +418,8 @@ class _OperationsScreenState extends State<OperationsScreen> {
   }
 
   void addMatrix(List<List<double>> matrix) {
-    String formattedMatrix = matrix
-        .map((row) => row.map((e) => e.toStringAsFixed(2)).toList().toString())
-        .join("\n");
+    String formattedMatrix =
+        matrix.map((row) => row.map((e) => e).toList().toString()).join("\n");
     addStep(formattedMatrix);
   }
 
@@ -394,6 +487,6 @@ class _OperationsScreenState extends State<OperationsScreen> {
     }
 
     addStep("Solution:");
-    addStep(solution.map((e) => e.toStringAsFixed(2)).toList().toString());
+    addStep(solution.map((e) => e).toList().toString());
   }
 }

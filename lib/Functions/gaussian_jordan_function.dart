@@ -1,10 +1,14 @@
+import '../core/toast.dart';
+
 class GaussianJordanSolve {
-  static List<double>? gaussianJordan(List<List<double>> matrix) {
+  static List<double>? gaussianJordan(List<List<double>> matrix,context) {
     int n = matrix.length;
     if (n == 0) return [];
 
     int m = matrix[0].length;
     if (m != n + 1) {
+      Toast.show("Invalid matrix dimensions: The matrix should have n rows and n+1 columns.", context,messageType: MessageType.error);
+
       throw Exception("Invalid matrix dimensions: The matrix should have n rows and n+1 columns.");
     }
 
