@@ -90,10 +90,23 @@ class GaussianJordanInverseSolve {
     return inverse;
   }
 
-  // دالة لطباعة المصفوفات
+  // // دالة لطباعة المصفوفات
   static void printMatrix(List<List<double>> matrix) {
     for (var row in matrix) {
-      print(row.map((e) => e.toStringAsFixed(6)).toList());
+       print(row.map((e) =>e==-0.0||e==-0?"0.0": e.toStringAsFixed(6)).toList());
     }
   }
+// دالة لطباعة المصفوفات
+//   static void printMatrix(List<List<double>> matrix) {
+//     for (var row in matrix) {
+//       print(row.map((e) {
+//         // استبدال القيم القريبة جدًا من الصفر بـ 0.00
+//         if (e.abs() < 1e-9) {
+//           return "0.00";
+//         }
+//         return e.toStringAsFixed(6);
+//       }).toList());
+//     }
+//   }
+
 }
