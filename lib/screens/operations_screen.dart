@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../Functions/gaussian_function.dart';
-import '../Functions/gaussian_jordan_function.dart';
-import '../Functions/inverse_function.dart';
 import '../core/general_functions.dart';
 import '../core/general_widgets.dart';
 import '../core/toast.dart';
@@ -23,15 +20,23 @@ class _OperationsScreenState extends State<OperationsScreen> {
     // [2,3,3,14],
     // [0,1,2,8]
     //
+    // [1,1,4],
+    // [1,-1,2]
+    //
+    //
     // [3, -4, -1, 2, 1],
     // [4, -1, -1, 3, 2],
     // [5, 2, -1, -1, 3],
     // [2, -1, 3, 2, -1]
     //
     // inverse
-    [2, 1, 1],
-    [1, 3, 2],
-    [1, 0, 0]
+    // [2, 1, 1],
+    // [1, 3, 2],
+    // [1, 0, 0]
+    //
+    // [4,7],
+    // [2,6]
+    //
     // inverso not found
     //   [1, 2],
     //   [2, 4]
@@ -107,12 +112,14 @@ class _OperationsScreenState extends State<OperationsScreen> {
                   title: "Delete Last Row",
                   onPressed: () {
                     inputMatrix.removeLast();
+                    steps = [];
                     setState(() {});
                   }),
               const SizedBox(height: 12),
               AppButton(
                   title: "Delete List",
                   onPressed: () {
+                    steps = [];
                     inputMatrix = [];
                     outputMatrix = [];
                     setState(() {});
@@ -215,6 +222,91 @@ class _OperationsScreenState extends State<OperationsScreen> {
     );
   }
 
+
+
+
+  // void performGaussianJordanForInverse(List<List<double>> matrix) {
+  //   int n = matrix.length;
+  //
+  //   // Check if the matrix is square
+  //   if (matrix.any((row) => row.length != n)) {
+  //     addStep("\nMatrix is not square, cannot find inverse.");
+  //     return;
+  //   }
+  //
+  //   // Create an augmented matrix with the identity matrix on the right
+  //   List<List<double>> augmented = List.generate(
+  //     n,
+  //         (i) => [
+  //       ...matrix[i].map((e) => e.toDouble()), // Ensure all values are double
+  //       ...List.generate(n, (j) => i == j ? 1.0 : 0.0)
+  //     ],
+  //   );
+  //
+  //   addStep("Initial Augmented Matrix:");
+  //   addMatrix(augmented);
+  //
+  //   // Perform Gaussian-Jordan elimination with partial pivoting
+  //   for (int i = 0; i < n; i++) {
+  //     // Find pivot element using partial pivoting
+  //     double pivot = augmented[i][i];
+  //     int pivotRow = i;
+  //     if (pivot.abs() < 1e-9) {
+  //       // Pivot selection: Find the largest pivot in the column
+  //       for (int k = i + 1; k < n; k++) {
+  //         if (augmented[k][i].abs() > pivot.abs()) {
+  //           pivot = augmented[k][i];
+  //           pivotRow = k;
+  //         }
+  //       }
+  //
+  //       // Swap rows if necessary
+  //       if (pivotRow != i) {
+  //         List<double> temp = augmented[i];
+  //         augmented[i] = augmented[pivotRow];
+  //         augmented[pivotRow] = temp;
+  //         addStep("\nSwapped rows ${i + 1} and ${pivotRow + 1} for pivot.");
+  //       }
+  //     }
+  //
+  //     // Check if the pivot is zero (singular matrix)
+  //     if (pivot.abs() < 1e-9) {
+  //       addStep("\nPivot is too small at row ${i + 1}, cannot continue.");
+  //       return;
+  //     }
+  //
+  //     // Normalize the pivot row
+  //     addStep("\nNormalizing row ${i + 1} by dividing by $pivot:");
+  //     for (int j = 0; j < 2 * n; j++) {
+  //       augmented[i][j] /= pivot;
+  //     }
+  //     addMatrix(augmented);
+  //
+  //     // Eliminate all other rows in the current column
+  //     for (int k = 0; k < n; k++) {
+  //       if (k != i) {
+  //         double factor = augmented[k][i];
+  //         addStep("\nEliminating column ${i + 1} in row ${k + 1} using row ${i + 1}:");
+  //         for (int j = 0; j < 2 * n; j++) {
+  //           augmented[k][j] -= factor * augmented[i][j];
+  //         }
+  //         addMatrix(augmented);
+  //       }
+  //     }
+  //   }
+  //
+  //   // Extract the inverse matrix from the augmented matrix
+  //   List<List<double>> inverse = List.generate(
+  //     n,
+  //         (i) => augmented[i]
+  //         .sublist(n) // Take the second half of the augmented matrix (identity part)
+  //         .map((e) => e.abs() < 1e-9 ? 0.0 : e) // Handle small values as zeros
+  //         .toList(),
+  //   );
+  //
+  //   addStep("\nFinal Inverse Matrix:");
+  //   addMatrix(inverse);
+  // }
   void performGaussianJordanForInverse(List<List<double>> matrix) {
     int n = matrix.length;
 
@@ -227,7 +319,7 @@ class _OperationsScreenState extends State<OperationsScreen> {
     // Create an augmented matrix with the identity matrix on the right
     List<List<double>> augmented = List.generate(
       n,
-      (i) => [
+          (i) => [
         ...matrix[i].map((e) => e.toDouble()), // Ensure all values are double
         ...List.generate(n, (j) => i == j ? 1.0 : 0.0)
       ],
@@ -236,13 +328,29 @@ class _OperationsScreenState extends State<OperationsScreen> {
     addStep("Initial Augmented Matrix:");
     addMatrix(augmented);
 
-    // Perform Gaussian-Jordan elimination
+    // Perform Gaussian-Jordan elimination with partial pivoting
     for (int i = 0; i < n; i++) {
-      // Find pivot element
+      // Partial pivoting to handle numerical instability
+      int pivotRow = i;
+      for (int k = i + 1; k < n; k++) {
+        if (augmented[k][i].abs() > augmented[pivotRow][i].abs()) {
+          pivotRow = k;
+        }
+      }
+
+      // Swap rows if necessary
+      if (pivotRow != i) {
+        List<double> temp = augmented[i];
+        augmented[i] = augmented[pivotRow];
+        augmented[pivotRow] = temp;
+        addStep("\nSwapped rows ${i + 1} and ${pivotRow + 1}:");
+        addMatrix(augmented);
+      }
+
+      // Find the pivot element
       double pivot = augmented[i][i];
       if (pivot.abs() < 1e-9) {
-        addStep(
-            "\nPivot is too small or zero at row ${i + 1}, cannot continue.");
+        addStep("\nPivot is too small or zero at row ${i + 1}, cannot continue.");
         return;
       }
 
@@ -270,131 +378,17 @@ class _OperationsScreenState extends State<OperationsScreen> {
     // Extract the inverse matrix from the augmented matrix
     List<List<double>> inverse = List.generate(
       n,
-      (i) =>
-          augmented[i].sublist(n).map((e) => e.abs() < 1e-9 ? 0.0 : e).toList(),
+          (i) => augmented[i]
+          .sublist(n) // Take the second half of the augmented matrix (identity part)
+          .map((e) => e.abs() < 1e-9 ? 0.0 : e) // Handle small values as zeros
+          .toList(),
     );
 
     addStep("\nFinal Inverse Matrix:");
     addMatrix(inverse);
   }
 
-  // void performGaussianJordanForInverse(List<List<double>> matrix) {
-  //   int n = matrix.length;
-  //
-  //   // Check if the matrix is square
-  //   if (matrix.any((row) => row.length != n)) {
-  //     addStep("\nMatrix is not square, cannot find inverse.");
-  //     return;
-  //   }
-  //
-  //   // Create an augmented matrix with the identity matrix on the right
-  //   List<List<double>> augmented = List.generate(
-  //     n,
-  //         (i) => [
-  //       ...matrix[i].map((e) => e.toDouble()), // Ensure all values are doubles
-  //       ...List.generate(n, (j) => i == j ? 1.0 : 0.0)
-  //     ],
-  //   );
-  //
-  //   addStep("Initial Augmented Matrix:");
-  //   addMatrix(augmented);
-  //
-  //   // Perform Gaussian-Jordan elimination
-  //   for (int i = 0; i < n; i++) {
-  //     // Find pivot element
-  //     double pivot = augmented[i][i];
-  //     if (pivot.abs() < 1e-9) {
-  //       addStep("\nPivot is too small or zero at row ${i + 1}, cannot continue.");
-  //       return;
-  //     }
-  //
-  //     // Normalize the pivot row
-  //     addStep("\nNormalizing row ${i + 1} by dividing by $pivot:");
-  //     for (int j = 0; j < 2 * n; j++) {
-  //       augmented[i][j] /= pivot;
-  //     }
-  //     addMatrix(augmented);
-  //
-  //     // Eliminate all other rows in the current column
-  //     for (int k = 0; k < n; k++) {
-  //       if (k != i) {
-  //         double factor = augmented[k][i];
-  //         addStep("\nEliminating column ${i + 1} in row ${k + 1} using row ${i + 1}:");
-  //         for (int j = 0; j < 2 * n; j++) {
-  //           augmented[k][j] -= factor * augmented[i][j];
-  //         }
-  //         addMatrix(augmented);
-  //       }
-  //     }
-  //   }
-  //
-  //   // Extract the inverse matrix from the augmented matrix
-  //   List<List<double>> inverse = List.generate(
-  //     n,
-  //         (i) => augmented[i].sublist(n).map((e) => e.abs() < 1e-9 ? 0.0 : e).toList(),
-  //   );
-  //
-  //   addStep("\nFinal Inverse Matrix:");
-  //   addMatrix(inverse);
-  // }
 
-  // void performGaussianJordanForInverse(List<List<double>> matrix) {
-  //   int n = matrix.length;
-  //
-  //   // Check if the matrix is square
-  //   if (matrix.any((row) => row.length != n)) {
-  //     addStep("\nMatrix is not square, cannot find inverse.");
-  //     return;
-  //   }
-  //
-  //   // Create an augmented matrix with the identity matrix on the right
-  //   List<List<double>> augmented = List.generate(
-  //     n,
-  //         (i) => [
-  //       ...matrix[i].map((e) => e.toDouble()), // Ensure all values are double
-  //       ...List.generate(n, (j) => i == j ? 1.0 : 0.0)
-  //     ],
-  //   );
-  //
-  //   addStep("Initial Augmented Matrix:");
-  //   addMatrix(augmented);
-  //
-  //   // Perform Gaussian-Jordan elimination
-  //   for (int i = 0; i < n; i++) {
-  //     // Find the pivot element and normalize the pivot row
-  //     double pivot = augmented[i][i];
-  //     if (pivot.abs() < 1e-9) {
-  //       addStep("\nPivot is too small or zero at row ${i + 1}, cannot continue.");
-  //       return;
-  //     }
-  //
-  //     addStep("\nNormalizing row ${i + 1} by dividing by $pivot:");
-  //     for (int j = 0; j < 2 * n; j++) {
-  //       augmented[i][j] /= pivot;
-  //     }
-  //     addMatrix(augmented);
-  //
-  //     // Eliminate all other entries in the current column
-  //     for (int k = 0; k < n; k++) {
-  //       if (k == i) continue;
-  //       double factor = augmented[k][i];
-  //       addStep("\nEliminating column ${i + 1} in row ${k + 1} using row ${i + 1}:");
-  //       for (int j = 0; j < 2 * n; j++) {
-  //         augmented[k][j] -= factor * augmented[i][j];
-  //       }
-  //       addMatrix(augmented);
-  //     }
-  //   }
-  //
-  //   // Extract the inverse matrix (the right side of the augmented matrix)
-  //   List<List<double>> inverse = List.generate(
-  //     n,
-  //         (i) => augmented[i].sublist(n).map((e) => e.abs() < 1e-9 ? 0.0 : e).toList(),
-  //   );
-  //
-  //   addStep("\nFinal Inverse Matrix:");
-  //   addMatrix(inverse);
-  // }
 
 // Helper function to format and print matrices
   void addMatrix(List<List<double>> matrix) {
@@ -404,88 +398,33 @@ class _OperationsScreenState extends State<OperationsScreen> {
     addStep(formattedMatrix);
   }
 
-  //
-  // void addMatrix(List<List<double>> matrix) {
-  //   String formattedMatrix = matrix
-  //       .map((row) => row
-  //           .map((e) => e == -0.0 || e == -0 ? "0.0" : e)
-  //           .toList()
-  //           .toString())
-  //       .join("\n");
-  //   addStep(formattedMatrix);
-  // }
-  //
-  //
-  // /// Inverse
-  //
-  // void performGaussianJordanForInverse(List<List<double>> matrix) {
-  //   int n = matrix.length;
-  //   int m = matrix[0].length;
-  //
-  //   // Check if the matrix is square
-  //   if (n != m) {
-  //     addStep("\nMatrix is not square, cannot find inverse.");
-  //     return;
-  //   }
-  //
-  //   // Create an augmented matrix with the identity matrix on the right
-  //   List<List<double>> augmented = [];
-  //   for (int i = 0; i < n; i++) {
-  //     augmented.add([
-  //       ...matrix[i].map((e) => e.toDouble()), // Ensure all values are double
-  //       ...List.generate(n, (j) => i == j ? 1.0 : 0.0)
-  //     ]);
-  //   }
-  //
-  //   addStep("Initial Matrix:");
-  //   addMatrix(augmented);
-  //
-  //   // Perform Gaussian-Jordan elimination
-  //   for (int i = 0; i < n; i++) {
-  //     // Normalize the pivot row
-  //     double pivot = augmented[i][i];
-  //     if (pivot == 0) {
-  //       addStep("\nCannot divide by zero at row ${i + 1}");
-  //       return;
-  //     }
-  //     addStep("\nWork on row ${i + 1} by dividing by $pivot:");
-  //     for (int j = 0; j < augmented[i].length; j++) {
-  //       print("pivot:$pivot");
-  //
-  //       augmented[i][j] /= pivot;
-  //     }
-  //     addMatrix(augmented);
-  //
-  //     // Eliminate all other entries in the current column
-  //     for (int k = 0; k < n; k++) {
-  //       if (k != i) {
-  //         double factor = augmented[k][i];
-  //         addStep(
-  //             "\nwork on element in column ${i + 1} in row ${k + 1} using row ${i + 1}:");
-  //         for (int j = 0; j < augmented[k].length; j++) {
-  //           augmented[k][j] -= factor * augmented[i][j];
-  //         }
-  //         addMatrix(augmented);
-  //       }
-  //     }
-  //   }
-  //
-  //   // Extract the inverse matrix (the right side of the augmented matrix)
-  //   List<List<double>> inverse = [];
-  //   for (int i = 0; i < n; i++) {
-  //     inverse.add(augmented[i]
-  //         .sublist(n)); // Extract the right part of the augmented matrix
-  //   }
-  //
-  //   addStep("\nInverse Matrix:");
-  //   addMatrix(inverse);
-  // }
-
+// Helper function to add steps and print debug messages
   void addStep(String text) {
+
     setState(() {
-      steps.add(text);
+      print(text);
+      steps.add(text); // Store the steps for displaying in UI
     });
   }
+
+
+
+// Helper function to format and print matrices
+//   void addMatrix(List<List<double>> matrix) {
+//     String formattedMatrix = matrix
+//         .map((row) => row.map((e) => e == -0.0 ? 0.0 : e).toList().toString())
+//         .join("\n");
+//     addStep(formattedMatrix);
+//   }
+//
+//   void addStep(String text) {
+//     setState(() {
+//       print (text);
+//       steps.add(text);
+//
+//     });
+//
+//   }
 
   /// GaussianJordanElimination
   void performGaussianJordanElimination(List<List<double>> matrix) {
@@ -553,71 +492,7 @@ class _OperationsScreenState extends State<OperationsScreen> {
   }*/
 
   /// GaussianElimination
-  // void performGaussianElimination(List<List<double>> matrix) {
-  //   int n = matrix.length;
-  //   int m = matrix[0].length;
-  //
-  //   addStep("Initial Matrix:");
-  //   addMatrix(matrix);
-  //
-  //   // Forward Elimination
-  //   for (int i = 0; i < n; i++) {
-  //     // Find the maximum element in the current column
-  //     double maxEl = matrix[i][i];
-  //     int maxRow = i;
-  //     for (int k = i + 1; k < n; k++) {
-  //       if (matrix[k][i].abs() > maxEl.abs()) {
-  //         maxEl = matrix[k][i];
-  //         maxRow = k;
-  //       }
-  //     }
-  //
-  //     // Swap the maximum row with the current row
-  //     addStep(
-  //         "Pivot for column ${i + 1}: Swap row ${i + 1} with row ${maxRow + 1}");
-  //     List<double> temp = matrix[maxRow];
-  //     matrix[maxRow] = matrix[i];
-  //     matrix[i] = temp;
-  //     addMatrix(matrix); // After row swap, update the matrix view
-  //
-  //     // Check for singular matrix
-  //     if (matrix[i][i] == 0) {
-  //       addStep(
-  //           "Matrix is singular or nearly singular. No unique solution exists.");
-  //       return;
-  //     }
-  //
-  //     // Make all rows below this one 0 in the current column
-  //     for (int k = i + 1; k < n; k++) {
-  //       double c = -matrix[k][i] / matrix[i][i];
-  //       addStep(
-  //           "work on element in column ${i + 1} in row ${k + 1} using row ${i + 1}:");
-  //       for (int j = i; j < m; j++) {
-  //         if (i == j) {
-  //           matrix[k][j] = 0;
-  //         } else {
-  //           matrix[k][j] += c * matrix[i][j];
-  //         }
-  //       }
-  //       addMatrix(matrix); // After elimination, update the matrix view
-  //     }
-  //   }
-  //
-  //   addStep("Final Matrix:");
-  //   addMatrix(matrix);
-  //
-  //   // Back Substitution
-  //   List<double> solution = List.filled(n, 0.0);
-  //   for (int i = n - 1; i >= 0; i--) {
-  //     solution[i] = matrix[i][m - 1] / matrix[i][i];
-  //     for (int k = i - 1; k >= 0; k--) {
-  //       matrix[k][m - 1] -= matrix[k][i] * solution[i];
-  //     }
-  //   }
-  //
-  //   addStep("Solution:");
-  //   addStep(solution.map((e) => e).toList().toString());
-  // }
+
   void performGaussianElimination(List<List<double>> matrix) {
     int n = matrix.length; // Number of rows
     int m = matrix[0].length; // Number of columns (including augmented part)
@@ -641,7 +516,7 @@ class _OperationsScreenState extends State<OperationsScreen> {
       // Swap the maximum row with the current row
       if (maxRow != i) {
         addStep(
-            "Pivot for column ${i + 1}: Swap row ${i + 1} with row ${maxRow + 1}");
+            "Leading for column ${i + 1}: Swap row ${i + 1} with row ${maxRow + 1}");
         List<double> temp = matrix[maxRow];
         matrix[maxRow] = matrix[i];
         matrix[i] = temp;

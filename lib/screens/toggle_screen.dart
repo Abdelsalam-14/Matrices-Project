@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/general_widgets.dart';
- import 'operations_screen.dart';
+import 'operations_screen.dart';
 
 class ToggleScreen extends StatefulWidget {
   const ToggleScreen({super.key});
@@ -21,28 +21,28 @@ class _ToggleScreenState extends State<ToggleScreen> {
             padding: const EdgeInsets.all(16),
             separatorBuilder: (BuildContext context, int index) =>
                 const SizedBox(height: 40),
-            itemCount: images.length,
-            itemBuilder: (BuildContext context, int index) => Column(
-                  children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 250,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                                image: AssetImage("images/${images[index]}"),
-                                fit: BoxFit.fill))),
-                    const SizedBox(height: 16),
-                    AppButton(
-                        title: buttonNames[index],
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => OperationsScreen(
-                                      appBarTitle: buttonNames[index])));
-                        })
-                  ]
-                )));
+            itemCount: 2
+            // images.length
+            ,
+            itemBuilder: (BuildContext context, int index) => Column(children: [
+                  Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 225,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                              image: AssetImage("images/${images[index]}"),
+                              fit: BoxFit.fill))),
+                  const SizedBox(height: 16),
+                  AppButton(
+                      title: buttonNames[index],
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => OperationsScreen(
+                                    appBarTitle: buttonNames[index])));
+                      })
+                ])));
   }
 }
